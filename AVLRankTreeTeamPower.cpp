@@ -593,7 +593,6 @@ void AVLRankTreePower::removeNode(TeamByPower *info) //based on assumption that 
         return;
     }
     updateMaxRec(nodeToRemoveParent);
-    Node<TeamByPower> *temp = nodeToRemoveParent;
     while (nodeToRemoveParent != nullptr)
     {
         updateHeight(nodeToRemoveParent);
@@ -602,7 +601,6 @@ void AVLRankTreePower::removeNode(TeamByPower *info) //based on assumption that 
         nodeToRemoveParent = balanceNode(nodeToRemoveParent);
         nodeToRemoveParent = nodeToRemoveParent->m_parent;
     }
-    updateMaxRec(temp);
     m_treeSize--;
 }
 
