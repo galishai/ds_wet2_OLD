@@ -81,15 +81,21 @@ void DynamicHashTable::resize()
         {
             TeamByID **array = new TeamByID *[m_arr[i]->m_treeSize];
             InorderTransversalIntoArray(m_arr[i]->m_root, array, m_arr[i]->m_treeSize, 0);
+            TeamByID **arraycopy = new TeamByID *[m_arr[i]->m_treeSize];
+            for(int j = 0; j < m_arr[i]->m_treeSize ; j++)
+            {
+                arraycopy[j] = new TeamByID(array[j]->m_teamID, array[j]->m_wins, array[j]->m_power);
+            }
             for (int j = 0; j < m_arr[i]->m_treeSize; j++)
             {
-                int newIndex = array[j]->m_teamID % newSize;
+                int newIndex = arraycopy[j]->m_teamID % newSize;
                 if (newArr[newIndex] == nullptr)
                 {
                     newArr[newIndex] = new AVLRankTree<TeamByID>();
                 }
-                newArr[newIndex]->insertNode(array[j]);
+                newArr[newIndex]->insertNode(arraycopy[j]);
             }
+            delete[] arraycopy;
             delete[] array;
         }
     }
@@ -97,7 +103,7 @@ void DynamicHashTable::resize()
     {
         if(m_arr[i] != nullptr)
         {
-            InorderNullify(m_arr[i]->m_root);
+            //InorderNullify(m_arr[i]->m_root);
             delete m_arr[i];
         }
     }
