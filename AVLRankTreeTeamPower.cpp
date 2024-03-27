@@ -83,6 +83,20 @@ void AVLRankTreePower::updateMaxRec(Node<TeamByPower> *node)
     }
 }
 
+void AVLRankTreePower::updateTempExtra(Node<TeamByPower> *node)
+{
+    int addedWinsPath = this->getAddedWins(node->m_info);
+    Node<TeamByPower> *temp = node;
+    while (temp != nullptr)
+    {
+        temp->m_tempExtra = addedWinsPath;
+        addedWinsPath -= temp->m_addWins;
+        temp = temp->m_parent;
+    }
+}
+
+
+
 void AVLRankTreePower::addWinsToLessEqual(TeamByPower* key, int addWins)
 {
     int right_turns = 0;
@@ -265,8 +279,11 @@ Node<TeamByPower> *AVLRankTreePower::RightRightRotation(Node<TeamByPower> *nodeB
 
     //nodeB->m_maxRank = max(getMax(nodeB->m_left), getMax(nodeB->m_right));
     //nodeA->m_maxRank = max(getMax(nodeA->m_left), getMax(nodeA->m_right));
-    updateMax(nodeB);
-    updateMax(nodeA);
+    //nodeA->m_maxRank = nodeB->m_maxRank;
+    //updateMax(nodeB, nodeB->m_tempExtra);
+    //updateMax(nodeA, nodeA->m_tempExtra);
+    updateMax(nodeB, nodeB->m_tempExtra);
+    updateMax(nodeA, nodeA->m_tempExtra);
     return nodeA;
 
 }
@@ -319,8 +336,11 @@ Node<TeamByPower> *AVLRankTreePower::LeftLeftRotation(Node<TeamByPower> *nodeB)
     nodeB->m_addWins = b_old - nodeA->m_addWins;
 
     //nodeB->m_maxRank = max(getMax(nodeB->m_left), getMax(nodeB->m_right));
-    updateMax(nodeB);
-    updateMax(nodeA);
+    //nodeA->m_maxRank = nodeB->m_maxRank;
+    //updateMax(nodeB, nodeB->m_tempExtra);
+    //updateMax(nodeA, nodeA->m_tempExtra);
+    updateMax(nodeB, nodeB->m_tempExtra);
+    updateMax(nodeA, nodeA->m_tempExtra);
     //nodeA->m_maxRank = max(getMax(nodeA->m_left), getMax(nodeA->m_right));
     return nodeA;
 }
@@ -494,7 +514,7 @@ void AVLRankTreePower::removeNode(TeamByPower *info) //based on assumption that 
         }
         if(nodeToRemove->m_right != nullptr)
         {
-            e4 = nodeToRemove->m_right->m_addWins;;
+            e4 = nodeToRemove->m_right->m_addWins;
         }
         if(temp->m_right != nullptr)
         {
@@ -511,14 +531,14 @@ void AVLRankTreePower::removeNode(TeamByPower *info) //based on assumption that 
             nodeToRemove->m_right->m_addWins = e4 - subset_extra;
         }
 
-        if(temp->m_right != nullptr && temp == nodeToRemove->m_right)
+        /*if(temp->m_right != nullptr && temp == nodeToRemove->m_right)
         {
             temp->m_right->m_addWins += nodeToRemove->m_addWins;
         }
         if(temp->m_left != nullptr && temp == nodeToRemove->m_right)
         {
             temp->m_left->m_addWins += nodeToRemove->m_addWins;
-        }
+        }*/
 
         Node<TeamByPower> *tempFather = temp->m_parent;
         temp->m_left = nodeToRemove->m_left;
@@ -533,6 +553,8 @@ void AVLRankTreePower::removeNode(TeamByPower *info) //based on assumption that 
         {
             nodeToRemoveParent->m_left = temp;
         }
+
+
         if (temp->m_parent != nodeToRemove)
         {
             if (temp->m_right != nullptr)
@@ -557,6 +579,7 @@ void AVLRankTreePower::removeNode(TeamByPower *info) //based on assumption that 
         Node<TeamByPower> *nodeToRemoveP = nodeToRemove->m_parent;
         delete nodeToRemove;
         int tempextra = getAddedWins(temp->m_info); //TODO
+        updateTempExtra(temp->m_left);
         if(temp->m_left != nullptr)
         {
             updateHeight(temp->m_left);
@@ -564,6 +587,7 @@ void AVLRankTreePower::removeNode(TeamByPower *info) //based on assumption that 
             updateMaxRec(temp->m_left);
             balanceNode(temp->m_left);
         }
+        updateTempExtra(temp->m_right);
         if(temp->m_right != nullptr)
         {
             updateHeight(temp->m_right);
@@ -588,6 +612,7 @@ void AVLRankTreePower::removeNode(TeamByPower *info) //based on assumption that 
                 tempFather = tempFather->m_parent;
             }
         }
+        Node<TeamByPower> *a = temp;
         updateMaxRec(temp);
         while (temp != nullptr)
         {
@@ -597,12 +622,14 @@ void AVLRankTreePower::removeNode(TeamByPower *info) //based on assumption that 
             temp = balanceNode(temp);
             temp = temp->m_parent;
         }
+        updateMaxRec(a);
         m_treeSize--;
         //updateMaxRec(tempUpdateMax);
         return;
     }
     updateMaxRec(nodeToRemoveParent);
     Node<TeamByPower> *temp = nodeToRemoveParent;
+    updateTempExtra(nodeToRemoveParent);
     while (nodeToRemoveParent != nullptr)
     {
         updateHeight(nodeToRemoveParent);
@@ -709,12 +736,17 @@ void AVLRankTreePower::insertNode(TeamByPower *new_T) //inserts new node when gu
     {
         updateMaxRec(ptr);
     }
+    updateTempExtra(ptr);
     while (ptr != nullptr)
     {
         ptr->m_height = 1 + max(getHeight(ptr->m_left), getHeight(ptr->m_right));
         updateSize(ptr);
         ptr = balanceNode(ptr);
         ptr = ptr->m_parent;
+    }
+    if(temp != nullptr)
+    {
+        updateMaxRec(temp);
     }
     m_treeSize++;
 }
