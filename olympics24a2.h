@@ -24,12 +24,12 @@
 
 class olympics_t {
 private:
-    DynamicHashTable m_teamsHash;
-    AVLRankTree<TeamByID> m_teamsByID;
-    AVLRankTreePower m_teamsByPower;
+    DynamicHashTable *m_teamsHash;
+    AVLRankTree<TeamByID> *m_teamsByID;
+    AVLRankTreePower *m_teamsByPower;
     int m_highestRank;
 
-    int m_timestamp;
+    //int m_timestamp;
 	//
 	// Here you may add anything you want
 	//

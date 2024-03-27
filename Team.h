@@ -15,6 +15,7 @@ public:
     int m_teamID;
     int m_wins;
     int m_power;
+    int m_player_count;
     AVLRankTree<PlayerByCreated>* m_playersByCreated;
     AVLRankTree<PlayerByStrength>* m_playersByStrength;
     PlayerByStrength* m_medianPlayer;
@@ -23,16 +24,12 @@ public:
         m_teamID = teamID;
         m_wins = wins;
         m_power = power;
+        m_player_count = 0;
         m_playersByCreated = new AVLRankTree<PlayerByCreated>();
         m_playersByStrength = new AVLRankTree<PlayerByStrength>();
         m_medianPlayer = nullptr;
     }
 
-    virtual ~Team()
-    {
-        delete m_playersByCreated;
-        delete m_playersByStrength;
-    }
     virtual bool operator==(Team* other) const = 0;
     virtual bool operator<(Team* other) const = 0;
 
