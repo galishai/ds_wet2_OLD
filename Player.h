@@ -18,12 +18,6 @@ public:
         m_strength = strength;
     }
 
-    explicit Player(Player *other)
-    {
-        m_created = other->m_created;
-        m_strength = other->m_strength;
-    }
-
     virtual bool operator<(Player* other) const = 0;
     bool operator==(Player* other) const
     {

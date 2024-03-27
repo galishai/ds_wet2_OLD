@@ -16,8 +16,11 @@ public:
     {
     };
 
-    explicit PlayerByStrength(PlayerByStrength* other): Player(other)
-    {}
+    /*explicit PlayerByCreated(PlayerByCreated* other): Player(other)
+    {
+        m_statVersionOfPlayer = other->m_statVersionOfPlayer;
+        m_playerInGeneralIDTree = other->m_playerInGeneralIDTree;
+    }*/
 
     bool operator<(Player *other) const override
     {

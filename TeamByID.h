@@ -7,20 +7,12 @@
 
 #include "Team.h"
 
-
-
 class TeamByID: public Team
 {
 public:
     explicit TeamByID(int teamID, int wins = 0, int power = 0): Team(teamID, wins, power)
     {
     };
-
-    ~TeamByID()
-    {
-        delete m_playersByCreated;
-        delete m_playersByStrength;
-    }
 
     bool operator==(Team* other) const override
     {
