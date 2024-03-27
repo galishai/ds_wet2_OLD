@@ -85,6 +85,10 @@ void AVLRankTreePower::updateMaxRec(Node<TeamByPower> *node)
 
 void AVLRankTreePower::updateTempExtra(Node<TeamByPower> *node)
 {
+    if(node == nullptr)
+    {
+        return;
+    }
     int addedWinsPath = this->getAddedWins(node->m_info);
     Node<TeamByPower> *temp = node;
     while (temp != nullptr)
